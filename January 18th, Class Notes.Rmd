@@ -1,0 +1,105 @@
+---
+title: "January18th, Class Notes"
+author: "Susan Davis"
+date: "2023-01-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r}
+x = 3
+y = 4 
+x<y
+x>y
+x!=y
+x==y
+```
+```{r}
+x = 1/49
+y = 49 
+x*y==1
+```
+
+```{r}
+x&y
+x|y
+!x
+!x|!y
+!(x&y)
+!x&!y
+```
+```{r}
+male.age = c(NA, 20,21, 35, 22, NA)
+female.age = c(21,NA,23,33,22,NA)
+age.data = tibble(ma=male.age, fa=female.age)
+age.data
+```
+```{r}
+na.omit(age.data)
+```
+```{r}
+filter(flights,month == 9,day == 13,origin =='LGA')
+filter(flights,month == 1,month == 12)
+filter(flights,month%in%c(11,12))
+```
+```{r}
+filter(flights,!(arr_delay > 120| dep_delay > 120))
+filter(flights,arr_delay <= 120,dep_delay <= 120)
+filter(flights, dep_delay == 0, arr_delay == 0)
+filter(flights,dep_delay ==0 & arr_delay == 0)
+```
+
+```{r}
+filter(flights, is.na(air_time))
+filter(flights,!is.na(air_time))
+na.omit(flights)
+```
+
+```{r}
+head(arrange(flights,day,dep_time))
+head(arrange(flights,desc(day), dep_time))
+```
+```{r}
+miss.data = tibble(x=c(1,1,NA,3,3,NA), y=c(NA,4,NA,5,NA,7))
+miss.data
+```
+```{r}
+arrange(miss.data,x)
+```
+```{r}
+arrange(miss.data, desc(x))
+```
+
+
+```{r}
+order(miss.data$x)
+```
+
+```{r}
+data1=select(flights,year,month,day)
+names(data1)
+```
+
+```{r}
+data2 = select(flights,dep_time:arr_delay)
+names(data2)
+```
+
+```{r}
+data3 = select(flights,-(dep_time:arr_delay))
+names(data3)
+```
+
+```{r}
+data8 = select(flights, contains('ar'))
+names(data8)
+```
+

@@ -1,0 +1,67 @@
+---
+title: 'Class Notes: January 20th, 2023'
+author: "Susan Davis"
+date: "2023-01-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+library(nycflights13)
+library(Tplyr)
+```
+
+
+```{r}
+flights_sml <-select(flights, year:day,
+                     starts_with("dep"),
+                     starts_with("arr"),
+                     distance, air_time)
+head(flights_sml)
+```
+```{r}
+mutate_flights_sml <- mutate(flights_sml,
+                             gain=arr_delay-dep_delay,
+                             speed=distance/air_time*60)
+head(select(mutate_flights_sml, gain, speed, everything()))
+```
+```{r}
+transmute_flights_sml <- transmute(flights_sml, gain = arr_delay-dep_delay, speed = distance/air_time*60)
+head(select(transmute_flights_sml, gain, speed, everything()))
+```
+```{r}
+flights1 = transmute(flights, dep_time, hour = dep_time%%100, minute = dep_time%%100)
+flights1
+```
+```{r}
+flights2 = transmute(flights1, dep_time, hour, minute, hrs_since_midnight= hour+minute/60)
+flights2
+```
+```{r}
+flights3 = select(flights, distance)
+ggplot(flights3) + 
+  geom_density(aes(x = distance))
+```
+
+```{r}
+flights4 = transmute(flights3, logdist=log(distance))
+
+ggplot(flights4) + 
+  geom_density(aes(x=logdist))
+```
+```{r}
+flights5 = transmute(flights, dep_delay, lag1_dep_delay = lag(dep_delay))
+flights5
+```
+```{r}
+flights6 <- transmute(filter(flights, origin=='LGA',dest == 'CLE', carrier == 'ULA'), dep_delay,rollsum_dep_delay=cumsum(dep_delay))
+flights6
+```
+```{r}
+#options(scipen == 999)
+#flights7<-arrange(transmute(filter(flights, origin=="LGA", dest == "CLE", carrier == "UA"), air = air_time, rank_air=min_rank(air_time),percentile=percent_rank(air_time),ecid_air=cume_dist(air_time), airtile5=ntile(air,5)),air)
+
+
+```
+
