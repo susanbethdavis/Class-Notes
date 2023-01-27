@@ -1,0 +1,143 @@
+---
+title: "January 23rd Class Notes"
+author: "Susan Davis"
+date: "2023-01-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r}
+# Chaining with the Pipe 
+f.pipedream = 
+  #Acknowledge the original data
+  flights %>%
+  
+#Input the original data and preform mutations
+  mutate(dep_hr=dep_time%/%100+(dep_time%%100)/60,
+         sched_dep_hr=sched_dep_time%/%100+(sched_dep_time%%100)/60,
+         arr_hr=arr_time%/%100+(arr_time%%100)/60,
+         sched_arr_hr=sched_arr_time%/%100+(sched_arr_time%%100)/60,
+         dep_delay_hr=dep_hr-sched_dep_hr,
+         arr_delay_hr=arr_hr-sched_arr_hr,
+         gain_hr = arr_delay_hr - dep_delay_hr, 
+         percent_gain_hr = percent_rank(gain_hr)) %>%
+  ## input modified data and select variables of interest
+  select(carrier, origin:distance, dep_delay_hr:percent_gain_hr) %>%
+  
+  #input modified data and sort according to empirical %-iles
+  arrange(desc(percent_gain_hr))
+
+f.pipedream
+```
+```{r}
+# Chaining with the Pipe 
+f.pipedream2 = 
+  #Acknowledge the original data
+  flights %>%
+  
+#Input the original data and preform mutations
+  mutate(dep_hr=dep_time%/%100+(dep_time%%100)/60,
+         sched_dep_hr=sched_dep_time%/%100+(sched_dep_time%%100)/60,
+         arr_hr=arr_time%/%100+(arr_time%%100)/60,
+         sched_arr_hr=sched_arr_time%/%100+(sched_arr_time%%100)/60,
+         dep_delay_hr=dep_hr-sched_dep_hr,
+         arr_delay_hr=arr_hr-sched_arr_hr,
+         gain_hr = arr_delay_hr - dep_delay_hr, 
+         percent_gain_hr = percent_rank(gain_hr)) %>%
+  ## input modified data and select variables of interest
+  select(carrier, origin:distance, dep_delay_hr:percent_gain_hr) %>%
+  
+  #input modified data and sort according to empirical %-iles
+  arrange(desc(percent_gain_hr)) %>%
+  
+  #Input modified data and remove Flights missing airtime 
+  filter(!is.na(air_time))
+
+f.pipedream2
+```
+```{r}
+f.pipedream3= 
+  ##acknowledge the data
+  f.pipedream2 %>%
+  
+  #filter based on gain variable
+  filter(abs(gain_hr) <10)
+
+```
+
+```{r}
+gain_hr.summary1 =summarize(f.pipedream3,
+                            n=n(),
+                            mean = mean(gain_hr, na.rm=T),
+                            var = var(gain_hr, na.rm=T),
+                            sd=sd(gain_hr, na.rm=T))
+gain_hr.summary2 = 
+  f.pipedream3 %>%
+  summarize(n=n(),
+            min = min(gain_hr),
+            Q1 = quantile(gain_hr, 0.25),
+            Q2 = quantile(gain_hr, 0.5),
+            Q3 = quantile(gain_hr,0.75),
+            max = max(gain_hr),
+            IQR = Q3 - Q1)
+gain_hr.summary1
+gain_hr.summary2
+
+```
+
+```{r}
+group.summary1 = f.pipedream3 %>%
+  group_by(origin) %>%
+  summarize(count = n())
+
+group.summary2 = 
+  f.pipedream3 %>%
+  group_by(origin) %>%
+  summarize(
+    n=n(),
+    min = min(gain_hr),
+    Q1 = quantile(gain_hr, 0.25),
+    Q2 = quantile(gain_hr, 0.5),
+    Q3 = quantile(gain_hr,0.75),
+    max = max(gain_hr),
+    IQR = (Q3 - Q1),
+    nlow = sum(gain_hr <Q1 - 1.5*IQR),
+    propHigh = mean(gain_hr > Q3 +1.5 *IQR)
+    
+  ) %>%
+  select(-IQR)
+
+group.summary1
+group.summary2
+```
+```{r}
+accuracy <-
+  f.pipedream3 %>%
+  transmute(carrier, origin, 
+            accuracy = abs(dep_delay_hr) + abs(arr_delay_hr)) %>%
+  group_by(carrier, origin) %>% 
+  summarize(n=n(),
+            avg = mean(accuracy, na.rm=T),
+            se = sd(accuracy, na.rm=T)/sqrt(n),
+            low = avg-2*se,
+            high = avg+2*se
+            )
+accuracy
+```
+
+```{r}
+ head(arrange(accuracy, desc(avg)), 5)
+```
+
+```{r}
+ggplot(filter(accuracy, carrier!= 'OO')) +
+  geom_point(aes( x = carrier, y = avg)) +
+  geom_errorbar(aes( x =carrier, ymin = low, ymax = high)) +
+  facet_grid( origin ~.)
+```
+
