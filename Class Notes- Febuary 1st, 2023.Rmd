@@ -1,0 +1,66 @@
+---
+title: 'Class Notes: Febuary 1st, 2023'
+author: "Susan Davis"
+date: "2023-02-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Group Members: 
+
+1. Susan Davis
+2. Grant McGowan
+3. Zachary Richardson
+4. Emmanuel Campos
+5. Aidan Kiernan
+6. Antonio Salinas
+
+Process:
+
+-> Data to Questions
+-> Questions to Investigating
+-> Investigating to Modeling
+->Modeling to Communication
+
+Four Deliverable:
+1. Project Proposal (10 Pts)
+2. Exploratory data analysis (20 Pts)
+3. final presentation (30 Pts)
+4. final written paper (40 Pts)
+
+Requirements on Deliverable:
+
+1. Role 1: Creator
+  - Schedule a 5 minute Meeting in Office Hours
+  - Be able to verbally explain data set
+  - Verbally communicate initial questions
+  - Know Roles of the other members
+  - Lead Designer in Slides for Final Presentation 
+  
+2. Interpreter(s)
+  - 10 minute meeting in office hours
+  - Briefly Discuss any interesting results from initial questions
+  - Discuss your groups findings on the follow up questions
+  - Explain which areas your group will focus on for the final presentation and paper
+  - Responsible for watching Practice presentation before Exam Day
+  - Groups of 6  will have 2 interpreters
+  
+3. Role 3: Orators
+  - Deliver a 3-5 Minute Presentation on th Day of the Final Exam
+  - Use a slide show
+  - Explain the Data you used
+  - Show visuals/ Tables to illustrate discoveries
+  - Discuss details of methods used for questions your group pursued deeper after the EDA
+  - Groups will have 2 Orators
+4. Deliverer
+  - Proposal, EDA, and Final Paper will Follow RMarkdown Templates
+  - Ensure that These parts are organized according to templates
+  - Ensure that these parts are free of grammar and spelling errors
+  - ensure that these parts are clearly explained and hit all requirements
+  - submit all templates before 5 PM on due dates in HTML
+  - Submit slides before final presentation on exam data
+  
+
